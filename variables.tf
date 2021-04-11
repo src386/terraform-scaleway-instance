@@ -1,5 +1,4 @@
-variable "image_name" {}
-variable "image_architecture" {}
+variable "image_id" {}
 variable "nb_instances" {
     type = number
 }

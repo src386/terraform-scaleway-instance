@@ -5,11 +5,17 @@
 
 This Terraform module deploys server instances with the following characteristics:
 
-- Select the operating system via `image_name` and `image_architecture`
+- Select the operating system via `image_id`
 - (Optionnal) Creates and attach a Public IP via `enable_public_ip`
 - (Optionnal) Cloud-init support via `cloud_init`
 - (Optionnal) Attach to a Security Group via `security_group_id`
 - (Optionnal) Add tags via `tags`
+
+Find `image_id` for `x86_64` image of `Ubuntu Xenial` in the `ams1` region:
+
+```bash
+curl https://api-marketplace.scaleway.com/images | jq '.images[] | select(.label=="ubuntu_xenial") | .versions[].local_images[] | select(.zone=="ams1" and .arch=="x86_64")'
+```
 
 ## Requirements
 
@@ -21,8 +27,7 @@ This Terraform module deploys server instances with the following characteristic
 module "swarm-master" {
   source              = "github.com/src386/terraform-scaleway-instance.git""
 
-  image_name          = "Debian Buster"
-  image_architecture  = "x86_64"
+  image_id            = "7d04dd2a-6cee-4aec-be9e-f87154009112" # Ubuntu Xenial, ams1
   nb_instances        = 1
   enable_public_ip    = true
   name                = "webserver"
@@ -37,8 +42,7 @@ module "swarm-master" {
 
 |    **Variable**    | **Mandatory** | **Type** |                  **Example**                 |
 |-------------------:|:-------------:|:--------:|:---------------------------------------------|
-|         image_name |      yes      |  string  |                "Debian Buster"               |
-| image_architecture |      yes      |  string  |                   "x86_64"                   |
+|           image_id |      yes      |  string  |   "7d04dd2a-6cee-4aec-be9e-f87154009112      |
 |       nb_instances |      yes      |  number  |                       1                      |
 |   enable_public_ip |      yes      |   bool   |                     true                     |
 |               name |      yes      |  string  |                  "webserver"                 |

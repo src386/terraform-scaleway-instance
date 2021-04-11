@@ -20,7 +20,7 @@ resource "scaleway_instance_server" "instance" {
   count                 = var.nb_instances
   name                  = "${var.name}-${count.index}"
   type                  = var.type
-  image = var.image_name
+  image                 = var.image_id
   security_group_id     = var.security_group_id
   additional_volume_ids = var.additional_volume_ids
   ip_id                 = scaleway_instance_ip.ip[count.index].id
