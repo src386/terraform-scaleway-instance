@@ -19,7 +19,7 @@ This Terraform module deploys server instances with the following characteristic
 
 ```hcl
 module "swarm-master" {
-  source              = "git::ssh://git@gitea.src386.org:2222/terraform/scaleway-instance.git"
+  source              = "git::ssh://git@github.com:src386/terraform-scaleway-instance.git"
 
   image_name          = "Debian Buster"
   image_architecture  = "x86_64"
