@@ -34,7 +34,7 @@ module "swarm-master" {
   type                = "DEV1-S"
   security_group_id   = scaleway_instance_security_group.securitygroup.id
   tags                = ["docker","terraform"]
-  cloud_init          = file("${path.module}/files/master/cloud-init.yaml")
+  cloud_init          = file("${path.module}/cloud-init.yaml")
 }
 ```
 
@@ -49,4 +49,4 @@ module "swarm-master" {
 |               type |      yes      |  string  |                   "DEV1-S"                   |
 |  security_group_id |       no      |  string  |                                              |
 |               tags |       no      |   list   |            ["docker","terraform"]            |
-|         cloud_init |       no      |  string  | file("${path.module}/files/cloud-init.yaml") |
+|         cloud_init |       no      |  string  | file("${path.module}/cloud-init.yaml") |
