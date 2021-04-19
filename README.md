@@ -2,7 +2,6 @@
 
 ## Deploys 1+ scaleway instances, attach tags, security group.
 
-
 This Terraform module deploys server instances with the following characteristics:
 
 - Select the operating system via `image_id`
@@ -10,43 +9,68 @@ This Terraform module deploys server instances with the following characteristic
 - (Optionnal) Cloud-init support via `cloud_init`
 - (Optionnal) Attach to a Security Group via `security_group_id`
 - (Optionnal) Add tags via `tags`
+- (Optionnal) Attach to a VPC
+- (Optionnal) Attach to a placement group
 
-Find `image_id` for `x86_64` image of `Ubuntu Xenial` in the `ams1` region:
+Find `image_id` for `x86_64` image of `Ubuntu Focal` in the `ams1` region:
 
 ```bash
-curl https://api-marketplace.scaleway.com/images | jq '.images[] | select(.label=="ubuntu_xenial") | .versions[].local_images[] | select(.zone=="ams1" and .arch=="x86_64")'
+curl https://api-marketplace.scaleway.com/images | jq '.images[] | select(.label=="ubuntu_focal") | .versions[].local_images[] | select(.zone=="ams1" and .arch=="x86_64")'
 ```
 
 ## Requirements
 
-- `terraform` >= `0.12`
+- `terraform` >= `0.13`
 
-## Usage
+## Simple usage (mandatory variables only)
 
 ```hcl
-module "swarm-master" {
+module "instance" {
   source              = "github.com/src386/terraform-scaleway-instance.git""
 
-  image_id            = "7d04dd2a-6cee-4aec-be9e-f87154009112" # Ubuntu Xenial, ams1
-  nb_instances        = 1
-  enable_public_ip    = true
+  image_id            = "a3ea99d3-c2fe-4189-acd3-219d9057eadd" # Ubuntu Focal, ams1  
   name                = "webserver"
   type                = "DEV1-S"
-  security_group_id   = scaleway_instance_security_group.securitygroup.id
-  tags                = ["docker","terraform"]
-  cloud_init          = file("${path.module}/cloud-init.yaml")
+}
+```
+
+## Advanced usage (all variables)
+
+```hcl
+module "instance" {
+  source              = "github.com/src386/terraform-scaleway-instance.git""
+
+  # Mandatory
+  image_id              = "a3ea99d3-c2fe-4189-acd3-219d9057eadd" # Ubuntu Focal, ams1  
+  name                  = "webserver"
+  type                  = "DEV1-S"
+
+  # Optionnal
+  additional_volume_ids = ["fr-par-1/11111111-1111-1111-1111-111111111111"]
+  cloud_init            = file("${path.module}/cloud-init.yaml")
+  enable_ipv6           = true
+  enable_public_ip      = true
+  nb_instances          = 3
+  placement_group_id    = "fr-par-1/11111111-1111-1111-1111-111111111111"
+  private_network_id    = "fr-par-1/11111111-1111-1111-1111-111111111111"
+  security_group_id     = "fr-par-1/11111111-1111-1111-1111-111111111111"
+  tags                  = ["tag1","tag2","tag3"]
 }
 ```
 
 ## Variables
 
-|    **Variable**    | **Mandatory** | **Type** |                  **Example**                 |
-|-------------------:|:-------------:|:--------:|:---------------------------------------------|
-|           image_id |      yes      |  string  |   "7d04dd2a-6cee-4aec-be9e-f87154009112      |
-|       nb_instances |      yes      |  number  |                       1                      |
-|   enable_public_ip |      yes      |   bool   |                     true                     |
-|               name |      yes      |  string  |                  "webserver"                 |
-|               type |      yes      |  string  |                   "DEV1-S"                   |
-|  security_group_id |       no      |  string  |                                              |
-|               tags |       no      |   list   |            ["docker","terraform"]            |
-|         cloud_init |       no      |  string  | file("${path.module}/cloud-init.yaml") |
+|    **Variable**       | **Mandatory** | **Type**      | **Defaults** |
+|----------------------:|:-------------:|:-------------:|:-------------|
+|              image_id |      yes      |  string       |              |
+|                  name |      yes      |  string       |              |
+|                  type |      yes      |  string       |              | 
+| additional_volume_ids |      no       |  list(string) |              |
+|            cloud_init |      no       |  string       |              |
+|           enable_ipv6 |      no       |  bool         | false        |
+|      enable_public_ip |      no       |  bool         | true         |
+|          nb_instances |      no       |  number       | 1            |
+|    placement_group_id |      no       |  string       |              |
+|    private_network_id |      no       |  string       |              |
+|     security_group_id |      no       |  string       |              |
+|                  tags |      no       |  list(string) |              |
