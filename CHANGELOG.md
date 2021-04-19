@@ -1,9 +1,10 @@
 # Changelog
 
-## [Unreleased]
+## 2021-04-19
 
-### Added
+### Changed
 
-- Initial code commit
-- README
-- CHANGELOG
+- Added Placement group support
+- Added VPC support
+- Requires Terraform >= 0.13
+- Updated README examples
